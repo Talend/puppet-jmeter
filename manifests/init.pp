@@ -11,6 +11,9 @@ class jmeter (
   $jmeter_plugins_install = false,
   $jmeter_plugins_version = '1.2.1',
   $jmeter_plugins_set     = ['Standard'],
+  $jpgc_plugins_install   = true,
+  $jpgc_plugins_set       = ['casutg-2.1', 'ggl-2.0'],
+  $jpgc_plugin_url        = 'http://jmeter-plugins.org/files/packages/',
   $download_url           = 'http://archive.apache.org/dist/jmeter/binaries/',
   $plugin_url             = 'http://jmeter-plugins.org/downloads/file/',
   $java_version           = $::jmeter::params::java_version,
@@ -41,6 +44,13 @@ class jmeter (
     jmeter::plugins_install { $jmeter_plugins_set:
       plugins_version   => $jmeter_plugins_version,
       base_download_url => $plugin_url,
+      require           => [Package['wget'], Package['unzip'], Exec['install-jmeter']],
+    }
+  }
+
+  if $jpgc_plugins_install == true {
+    jmeter::jdbc_plugins_install { $jpgc_plugins_set:
+      base_download_url => $jpgc_plugin_url,
       require           => [Package['wget'], Package['unzip'], Exec['install-jmeter']],
     }
   }
