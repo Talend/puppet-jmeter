@@ -15,15 +15,34 @@ describe 'jmeter' do
       }
     end
 
+    let :params do
+      {
+        :jpgc_plugins_set  => ['casutg-2.1'],
+        :user_property_config => ['set jmeter.save.saveservice.data_type false']
+      }
+    end
+
     it {
       should contain_exec('download-jmeter').with(
-          { 'creates' => "/root/apache-jmeter-#{@jmeter_version}.tgz"} 
+          { 'creates' => "/root/apache-jmeter-#{@jmeter_version}.tgz"}
         )
     }
 
     it {
-      should contain_exec('install-jmeter').with( 
-          { 'command' => "tar xzf /root/apache-jmeter-#{@jmeter_version}.tgz && mv apache-jmeter-#{@jmeter_version} jmeter"} 
+      should contain_exec('install-jmeter').with(
+          { 'command' => "tar xzf /root/apache-jmeter-#{@jmeter_version}.tgz && mv apache-jmeter-#{@jmeter_version} jmeter"}
+        )
+    }
+
+    it {
+      should contain_jmeter__jdbc_plugins_install('casutg-2.1').with(
+          { 'base_download_url' => 'http://jmeter-plugins.org/files/packages/'}
+        )
+    }
+
+    it {
+      should contain_jmeter__config_property_file('user.properties').with(
+          { 'change_set' => ['set jmeter.save.saveservice.data_type false']}
         )
     }
 
